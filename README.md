@@ -10,6 +10,9 @@ The recommended method of installation is via [pip](https://pypi.org/project/pip
     
     apt-get install python-pip (Ubuntu)
     
+    # Install hdcorepy
+    pip install hdcorepy
+    
     
 ## Usage
 
