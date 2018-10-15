@@ -3,7 +3,7 @@ A simple python wrapper around [HostDime](http://www.hostdime.in/)'s client [API
 
 ## Installing as a Python Module
 
-The recommended method of installation is via [pip](https://pypi.org/project/pip/)
+The recommended method of installation is via [pip](https://pypi.org/project/hdcorepy/)
 
     # Install pip
     yum install python-pip (CentOS)
