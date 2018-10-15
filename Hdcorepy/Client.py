@@ -12,7 +12,7 @@ class Client:
 		return self.__generateHex(max=65535)+self.__generateHex(max=65535)+'-'+self.__generateHex(max=65535)+'-'+self.__generateHex(max=4095, orKey=16384)+'-'+self.__generateHex(max=16383, orKey=32768)+'-'+self.__generateHex(max=65535)+self.__generateHex(max=65535)+self.__generateHex(max=65535)
 
 	def __generateHash(self):
-		hashelements = ':'.join([self.__timestamp, str(self.__unique), self.__privateKey, self.__action, json.dumps(json.dumps(self.__parameters))])
+		hashelements = ':'.join([self.__timestamp, self.__unique, self.__privateKey, self.__action, json.dumps(json.dumps(self.__parameters))])
 		hashCode = hashlib.sha256(hashelements.encode('utf-8')).hexdigest()
 		return hashCode
 
@@ -49,8 +49,6 @@ class Client:
 
 		#build the Json request for the coreAPI server
 		self.__buildJson()
-
-		print "Request \n"+urllib.urlencode(self.__payLoad)
 
 		#get response from the coreApi server
 		return self.__getResponse()
