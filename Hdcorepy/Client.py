@@ -1,4 +1,4 @@
-import json, time, hashlib, urllib2, random
+import json, time, hashlib, urllib2, urllib, random
 class Client:
 	def __init__(self, privateKey, publicKey):
 		self.__endpoint = 'https://api.hostdime.com/v1/'
@@ -12,24 +12,23 @@ class Client:
 		return self.__generateHex(max=65535)+self.__generateHex(max=65535)+'-'+self.__generateHex(max=65535)+'-'+self.__generateHex(max=4095, orKey=16384)+'-'+self.__generateHex(max=16383, orKey=32768)+'-'+self.__generateHex(max=65535)+self.__generateHex(max=65535)+self.__generateHex(max=65535)
 
 	def __generateHash(self):
-		hashelements = ':'.join([self.__timestamp, str(self.__unique), self.__privateKey, self.__action, json.dumps(self.__parameters)])
+		hashelements = ':'.join([self.__timestamp, str(self.__unique), self.__privateKey, self.__action, json.dumps(json.dumps(self.__parameters))])
 		hashCode = hashlib.sha256(hashelements.encode('utf-8')).hexdigest()
 		return hashCode
 
 	def __buildJson(self):
 		self.__payLoad = self.__parameters
 		authenticationData = {
-			'api_key' : str(self.__publicKey),
-			'api_timestamp' : str(self.__timestamp),
-			'api_unique' : str(self.__unique),
-			'api_hash' : str(self.__hash)
+			'api_key' : self.__publicKey,
+			'api_timestamp' : self.__timestamp,
+			'api_unique' : self.__unique,
+			'api_hash' : self.__hash
 		}
 		self.__payLoad.update(authenticationData)
 
-		#self.__payLoad = json.dumps(self.__payLoad)
 
 	def __getResponse(self):
-		return urllib2.urlopen(urllib2.Request(self.__endpoint+'/'.join(self.__action.split('.'))+'.json', data=json.dumps(self.__payLoad), headers = {'content-type': 'application/json'})	).read()
+		return urllib2.urlopen(urllib2.Request(self.__endpoint+'/'.join(self.__action.split('.'))+'.json', data=urllib.urlencode(self.__payLoad))).read()
 
 	def call(self, action, parameters = None):
 		if parameters is None:
@@ -51,11 +50,8 @@ class Client:
 		#build the Json request for the coreAPI server
 		self.__buildJson()
 
-		print "Request \n"+json.dumps(self.__payLoad, indent=2)
+		print "Request \n"+urllib.urlencode(self.__payLoad)
 
 		#get response from the coreApi server
-		responseData = self.__getResponse()
-		print responseData
-
-		#print "payLoad -> " + str(self.__payLoad)
+		return self.__getResponse()
 
